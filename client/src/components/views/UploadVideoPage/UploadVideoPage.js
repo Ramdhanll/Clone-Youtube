@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Typography, Button, Form, message, Input, Icon } from 'antd'
 import Dropzone from 'react-dropzone'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -18,12 +20,15 @@ const Category = [
   { value: 0, label: 'Sports'},
 ]
 
-function UploadVideoPage() {
-
+function UploadVideoPage(props) {
+  const user = useSelector(state => state.user)
   const [title, setTitle] = useState("")
   const [Description, setDescription] = useState("")
   const [Privacy, setPrivacy] = useState(0)
   const [Categories, setCategories] = useState("Film & Animation")
+  const [FilePath, setFilePath] = useState("")
+  const [Duration, setDuration] = useState("")
+  const [Thumbnail, setThumbnail] = useState("")
 
   const handleChangeTitle = event => {
     setTitle(event.currentTarget.value)
@@ -41,8 +46,67 @@ function UploadVideoPage() {
     setCategories(event.currentTarget.value)
   }
 
-  const onSubmit = () => {
-    console.log('test')
+  const onSubmit = event => {
+    event.preventDefault()
+
+    const variables = {
+      writer: user.userData._id,
+      title: title,
+      description: Description,
+      privacy: Privacy,
+      filePath: FilePath,
+      category: Categories,
+      duration: Duration,
+      thumbnail: Thumbnail
+    }
+    console.log(variables)
+
+    axios.post('/api/video/uploadVideo', variables)
+    .then((response) => {
+      if(response.data.success) {
+        alert('Video Uploaded Successfully')
+        props.history.push('/')
+      } else {
+        alert('Failed to upload video')
+      }
+    }).catch((err) => {
+      
+    });
+  }
+
+  const onDrop = files => {
+    let formData = new FormData()
+    const config = {
+      header : { 'content-type': 'multipart/form-data'}
+    }
+    formData.append("file", files[0])
+
+    axios.post('/api/video/uploadfiles', formData, config)
+    .then( response => {
+      console.log(response)
+      if(response.data.success) {
+        let variable = {
+          filePath : response.data.filePath,
+          fileName : response.data.fileName,
+        }
+        setFilePath(response.data.filePath)
+        
+        // genereate thumbnail with this filepath
+        axios.post('/api/video/thumbnail', variable)
+        .then((result) => {
+          if(result.data.success){
+            setDuration(result.data.fileDuration)
+            setThumbnail(result.data.thumbsFilePath)
+          }else {
+            alert('Failed to make the thumbnails')
+          }
+        }).catch((err) => {
+          
+        });
+      } else {
+        alert('failed to save the video in server')
+      }
+    })
   }
 
   return (
@@ -54,7 +118,7 @@ function UploadVideoPage() {
       <Form onSubmit={onSubmit}>
         <div style={{ display: 'flex', justifyContent: 'space-between'}} >
           <Dropzone
-            onDrop={}
+            onDrop={onDrop}
             multiple={false}
             maxSize={800000000}>
             {
@@ -69,12 +133,12 @@ function UploadVideoPage() {
             }
           </Dropzone>
 
-            {/* {
-              thumbnail !== "" && 
+            {
+              Thumbnail !== "" && 
                 <div>
                   <img src={`http://localhost:5000/${Thumbnail}`} alt="haha" />
                 </div>
-            } */}
+            }
         </div>
         <br /><br />
         <label>Title</label>
@@ -90,14 +154,14 @@ function UploadVideoPage() {
         />
         <br /><br />
 
-        <select onChange={handleChangeOne}>
+        <select onChange={handleChangeOne} style={{padding: '3px 5px', borderColor: '#d8d8d8', borderRadius: '5px'}}>
             {Private.map((item, index) => (
                 <option key={index} value={item.value}>{item.label}</option>
             ))}
         </select>
         <br /><br />
 
-        <select onChange={handleChangeTwo}>
+        <select onChange={handleChangeTwo} style={{padding: '3px 5px', borderColor: '#d8d8d8', borderRadius: '5px'}}>
           {Category.map((item, index) => (
               <option key={index} value={item.label}>{item.label}</option>
           ))}

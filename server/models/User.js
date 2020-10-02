@@ -34,7 +34,7 @@ const userSchema = mongoose.Schema({
         type: Number
     }
 })
- 
+
 
 userSchema.pre('save', function( next ) {
     var user = this;
