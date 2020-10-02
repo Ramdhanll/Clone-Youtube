@@ -1,7 +1,8 @@
 /node_modules
 /build
 
-uploads
+uploads/*
+uploads/thumbnails/*
 
 dev.js
 
