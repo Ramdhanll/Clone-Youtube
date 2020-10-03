@@ -49,6 +49,17 @@ function UploadVideoPage(props) {
   const onSubmit = event => {
     event.preventDefault()
 
+    if(user.userData && !user.userData.isAuth){
+      return alert('Please login first')
+    }
+
+    if( title === "" || Description === "" ||
+        Privacy === "" || FilePath === "" ||
+        Categories === "" || Duration === "" ||
+        Thumbnail === "") {
+          return alert('Please first fill all the fields')
+      }
+
     const variables = {
       writer: user.userData._id,
       title: title,
