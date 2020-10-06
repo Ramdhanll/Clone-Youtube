@@ -9,5 +9,5 @@ router.get('/getVideos', auth, VideoController.getVideos)
 router.post('/uploadfiles', auth, VideoController.uploadfiles )
 router.post('/thumbnail', auth, VideoController.thumbnail)
 router.post('/uploadVideo', auth, VideoController.uploadVideo)
-
+router.post('/getVideo', VideoController.getVideo)
 module.exports = router

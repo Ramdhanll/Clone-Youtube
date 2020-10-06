@@ -74,16 +74,26 @@ const uploadVideo = (req, res) => {
 
 const getVideos = (req, res) => {
   Video.find()
-    .populate('writer')
+    .populate('writer', '_id name image')
     .exec((err, videos) => {
       if(err) return res.status(400).send(err)
       res.status(200).json({ success : true, videos})
     })
 }
 
+const getVideo = (req, res) => {
+  Video.findOne({"_id" : req.body.videoId}) 
+  .populate('writer', '_id name image')
+  .exec((err, video) => {
+    if(err) return res.status(400).send(err)
+    res.status(200).json({success : true, video})
+  })
+}
+
 module.exports = {
   uploadfiles,
   thumbnail,
   uploadVideo,
-  getVideos
+  getVideos,
+  getVideo
 }
