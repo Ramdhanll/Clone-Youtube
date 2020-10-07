@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { List, Avatar, Typography, Row, Col } from 'antd'
 import axios from 'axios'
 import SideVideo from './Sections/SideVideo'
+import Subscriber from './Sections/Subscriber'
+import { useSelector } from 'react-redux'
 
 function DetailVideoPage(props) {
-
+   const user = useSelector(state => state.user)
    const videoId = props.match.params.videoId
    const [Video, setVideo] = useState([])
-
    const videoVariable = {
       videoId
    }
@@ -16,15 +17,13 @@ function DetailVideoPage(props) {
       axios.post('/api/video/getVideo', videoVariable)
       .then((response) => {
          if(response.data.success) {
-            console.log(response.data)
+            // console.log('detail video', response.data)
             setVideo(response.data.video)
          } else {
             alert('Failed to get video info')
          }
-      }).catch((err) => {
-         
-      });
-   }, [])
+      })
+   }, [videoId])
 
 
    return (
@@ -32,8 +31,10 @@ function DetailVideoPage(props) {
          <Col lg={18} xs={24}>
             <div className='postPage' style={{width:'100%', padding:'3rem 2em'}}>
                <video style={{ width: '100%' }} src={`http://localhost:5000/${Video.filePath}`} controls></video>
-               <List.Item
-                  actions={[]}
+               {
+                  Video.writer && user.userData? (
+                     <List.Item
+                  actions={[ <Subscriber userTo={Video.writer._id} userFrom={user.userData._id}/>]}
                >
                   <List.Item.Meta
                      avatar={<Avatar src={Video.writer && Video.writer.image} />}
@@ -42,6 +43,8 @@ function DetailVideoPage(props) {
                   />
                   <div></div>
                </List.Item>
+                  ) : (<div>Loading...</div>)
+               }
             </div>
          </Col>
          <Col lg={6} xs={24}>

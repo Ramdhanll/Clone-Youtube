@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Typography, Button, Form, message, Input, Icon } from 'antd'
+import React, { useState } from 'react'
+import { Typography, Button, Form, Input, Icon } from 'antd'
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
@@ -29,7 +29,6 @@ function UploadVideoPage(props) {
   const [FilePath, setFilePath] = useState("")
   const [Duration, setDuration] = useState("")
   const [Thumbnail, setThumbnail] = useState("")
-
   const handleChangeTitle = event => {
     setTitle(event.currentTarget.value)
   }
@@ -70,7 +69,6 @@ function UploadVideoPage(props) {
       duration: Duration,
       thumbnail: Thumbnail
     }
-    console.log(variables)
 
     axios.post('/api/video/uploadVideo', variables)
     .then((response) => {
@@ -80,9 +78,7 @@ function UploadVideoPage(props) {
       } else {
         alert('Failed to upload video')
       }
-    }).catch((err) => {
-      
-    });
+    })
   }
 
   const onDrop = files => {
