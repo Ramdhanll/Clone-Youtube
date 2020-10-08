@@ -21,7 +21,28 @@ const subscribed = (req, res) => {
    })
 }
 
+const subscribe = (req, res) => {
+   const subscribe = new Subscriber(req.body)
+
+   subscribe.save((err, doc) => {
+      if(err) return res.json({ success : false, err})
+      return res.status(200).json({ success: true })
+   })
+}
+
+const unsubscribe = (req, res) => {
+   console.log(req.body)
+   Subscriber.findOneAndDelete(req.body,
+   (err, doc) => {
+      if(err) return res.status(400).json({ success: false, err})
+      return res.status(200).json({success : true, doc})
+   })
+
+}
+
 module.exports = {
    subscribeNumber,
-   subscribed
+   subscribed,
+   subscribe,
+   unsubscribe
 }

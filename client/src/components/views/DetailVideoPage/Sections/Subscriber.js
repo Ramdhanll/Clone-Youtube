@@ -8,7 +8,40 @@ function Subscriber(props) {
    const [SubscribeNumber, setSubscribeNumber] = useState(0)
    const [Subscribed, setSubscribed] = useState(false)
 
+
+   const onSubscribe = () => {
+      const subscribeVariables = {
+         userTo,
+         userFrom
+      }
+
+      if(Subscribed) {
+         // when we are already subscribe
+         axios.post('/api/subscribe/unsubscribe', subscribeVariables)
+         .then((response) => {
+            if(response.data.success) {
+               setSubscribeNumber(SubscribeNumber - 1)
+               setSubscribed(!Subscribed)
+            } else {
+               alert('Failed to unsubscribe')
+            }
+         })
+      } else {
+         // when we are no subscribe yet
+         axios.post('/api/subscribe/subscribe', subscribeVariables)
+         .then((response) => {
+            if(response.data.success) {
+               setSubscribeNumber(SubscribeNumber + 1)
+               setSubscribed(!Subscribed)
+            } else {
+               alert('Failed to subscribe')
+            }
+         })
+      }
+   }
+
    useEffect(() => {
+      console.log('rendering gan')
       const subscribeNumberVariables = { 
          userTo,
          userFrom
@@ -30,11 +63,12 @@ function Subscriber(props) {
             alert('Failed to subscribed!')
          }
       })
-   }, [])
+   }, [userTo])
 
    return (
       <div>
          <button 
+            onClick={onSubscribe}
             style={{
                backgroundColor: `${Subscribed ? '#AAAAAA' : '#CC0000'}`, 
                borderRadius: '4px', 
@@ -44,7 +78,7 @@ function Subscriber(props) {
                fontSize: '1rem',
                textTransform: 'uppercase'
                }}>
-            {SubscribeNumber} {Subscribed ? 'Subscribed' : 'Subscribe'} 
+            {SubscribeNumber} {Subscribed ? 'Disubscribe' : 'Subscribe'} 
          </button>
       </div>
    )
