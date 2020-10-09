@@ -1,30 +1,34 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaCode } from "react-icons/fa";
 import { Card, Avatar, Col, Typography, Row } from 'antd'
 import axios from 'axios';
 import moment from 'moment'
 import {Link} from 'react-router-dom'
-
+import { useSelector } from 'react-redux'
 const { Title } = Typography
 const { Meta } = Card
 
-function LandingPage() {
 
-const [Videos, setVideos] = useState([])
+function SubscriptionPage() {
+   const user = useSelector(state => state.user)
+   const [Videos, setVideos] = useState([])
 
-useEffect(() => {
-   axios.get('/api/video/getVideos')
-   .then((response) => {
-      if(response.data.success){
-      setVideos(response.data.videos)
-      } else {
-      alert('Failed to get videos')
-      }
-   })
-}, [])
+   let variables = {
+      userFrom : localStorage.getItem('userId')
+   }
+
+   useEffect(() => {
+      axios.post('/api/video/getSubscriptionVideos', variables)
+      .then((response) => {
+         if(response.data.success){
+         setVideos(response.data.videos)
+         } else {
+         alert('Failed to get subscription videos')
+         }
+      })
+   }, [])
 
    const renderCards = Videos.map((video, index) => {
-
       let minutes = Math.floor(video.duration / 60)
       let seconds = Math.floor(video.duration - minutes * 60)
 
@@ -55,7 +59,7 @@ useEffect(() => {
 
    return (
       <div style={{ width: '85%', margin: '3rem auto'}}>
-         <Title level={2}> Recommended</Title>
+         <Title level={2}> Subscribed Videos </Title>
          <hr/>
 
          <Row style={{display: 'flex'}}>
@@ -66,4 +70,4 @@ useEffect(() => {
    )
 }
 
-export default LandingPage
+export default SubscriptionPage

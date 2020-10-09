@@ -1,7 +1,7 @@
-// Require
 const multer = require('multer')
 const ffmpeg = require('fluent-ffmpeg')
 const { Video } = require("../models/Video")
+const { Subscriber } = require("../models/Subscriber")
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -90,10 +90,38 @@ const getVideo = (req, res) => {
   })
 }
 
+const getSubscriptionVideos = (req, res) => {
+  // find all of the users that i am subscribing to from subscriber collention
+  Subscriber.find(req.body, (err, subscribers) => {
+    if(err) return res.status(400).send(err)
+
+    let subscribedUser = []
+    subscribers.map((subscriber, i) => {
+      subscribedUser.push(subscriber.userTo)
+    })
+
+    // fetch all of the videos that belong to the users that i found in previous step
+    
+    /*
+    The $in operator selects the documents where the value of a field equals any value in the specified array. 
+    To specify an $in expression, use the following prototype:
+    */
+    Video.find({ writer : { $in: subscribedUser }})
+    .populate('writer')
+    .exec((err, videos) => {
+      if(err) return res.status(400).send(err)
+      return res.status(200).json({success: true, videos})
+    })
+
+  })
+
+}
+
 module.exports = {
   uploadfiles,
   thumbnail,
   uploadVideo,
   getVideos,
-  getVideo
+  getVideo,
+  getSubscriptionVideos
 }
