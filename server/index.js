@@ -22,14 +22,17 @@ app.use(cors())
 //to not get any deprecation warning or error
 //support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }));
+
 //to get json data
 // support parsing of application/json type post data
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+// apis
 app.use('/api/users', require('./routes/users'));
 app.use('/api/video', require('./routes/video'));
 app.use('/api/subscribe', require('./routes/subscribe'));
+app.use('/api/comment', require('./routes/comment'));
 
 
 //use this to show the image you have in node js server to client (react js)

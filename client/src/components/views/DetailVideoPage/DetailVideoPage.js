@@ -3,12 +3,15 @@ import { List, Avatar, Typography, Row, Col } from 'antd'
 import axios from 'axios'
 import SideVideo from './Sections/SideVideo'
 import Subscriber from './Sections/Subscriber'
+import Comments from './Sections/Comments'
 import { useSelector } from 'react-redux'
 
 function DetailVideoPage(props) {
    const user = useSelector(state => state.user)
    const videoId = props.match.params.videoId
    const [Video, setVideo] = useState([])
+   const [CommentLists, setCommentLists] = useState([])
+
    const videoVariable = {
       videoId
    }
@@ -25,6 +28,9 @@ function DetailVideoPage(props) {
       })
    }, [videoId])
 
+   const updateComment = (newComment) => {
+      setCommentLists(CommentLists.concat(newComment))
+   }
 
    return (
       <Row>
@@ -45,6 +51,8 @@ function DetailVideoPage(props) {
                </List.Item>
                   ) : (<div>Loading...</div>)
                }
+
+               <Comments CommentLists={CommentLists} postId={Video._id} refreshFunction={updateComment}/>
             </div>
          </Col>
          <Col lg={6} xs={24}>
