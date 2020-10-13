@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import { Button, Input } from 'antd'
 import axios from 'axios';
 import { useSelector } from 'react-redux'
+import SingleComment from '../Sections/SingleComment'
 const { TextArea } = Input
+
 function Comments(props) {
    const user = useSelector(state => state.user)
    const [Comment, setComment] = useState("")
@@ -39,8 +41,15 @@ function Comments(props) {
          <hr/>
          {/* { comment list} */}
          {
-            console.log('comment list', props.CommentLists)
+            (!Comment.responseTo && 
+               props.CommentLists && props.CommentLists.map(( comment, index ) => (
+                  <>
+                     <SingleComment comment={comment} postId={props.postId} refreshFunction={props.refreshFunction} />
+                  </>
+               ))
+            )
          }
+         
          {/* {root comment list} */}
          <form style={{display: 'flex'}} onSubmit={onSubmit}>
             <TextArea

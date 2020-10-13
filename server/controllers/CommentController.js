@@ -6,7 +6,7 @@ const saveComment = (req, res) => {
       if(err) return res.json({ success: false, err})
 
       Comment.find({ '_id' : comment._id})
-      .populate('writer', '_id name')
+      .populate('writer', '_id name image')
       .exec((err, result) => {
          if(err) return res.json({ success: false, err})
 
@@ -15,6 +15,16 @@ const saveComment = (req, res) => {
    }) 
 }
 
+const getComments = (req, res) => {
+   Comment.find({ "postId" : req.body.videoId })
+   .populate('writer', '_id name image')
+   .exec((err, comments) => {
+      if(err) return res.status(400).send(err)
+      res.status(200).json({ success: true, comments})
+   })
+}
+
 module.exports = {
-   saveComment
+   saveComment,
+   getComments
 }

@@ -28,6 +28,18 @@ function DetailVideoPage(props) {
       })
    }, [videoId])
 
+   useEffect(() => {
+      axios.post('/api/comment/getComments', videoVariable)
+      .then((response) => {
+         if(response.data.success) {
+            // console.log('detail video', response.data)
+            setCommentLists(response.data.comments)
+         } else {
+            alert('Failed to get video info')
+         }
+      })
+   }, [])
+
    const updateComment = (newComment) => {
       setCommentLists(CommentLists.concat(newComment))
    }
