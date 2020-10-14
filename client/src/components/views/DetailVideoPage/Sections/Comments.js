@@ -3,6 +3,7 @@ import { Button, Input } from 'antd'
 import axios from 'axios';
 import { useSelector } from 'react-redux'
 import SingleComment from '../Sections/SingleComment'
+import ReplyComment from '../Sections/ReplyComment'
 const { TextArea } = Input
 
 function Comments(props) {
@@ -28,6 +29,7 @@ function Comments(props) {
          if(response.data.success) {
             setComment("")
             props.refreshFunction(response.data.result)
+            console.log(response.data.result)
          } else {
             alert('Failed to save comment')
          }
@@ -41,11 +43,13 @@ function Comments(props) {
          <hr/>
          {/* { comment list} */}
          {
-            (!Comment.responseTo && 
-               props.CommentLists && props.CommentLists.map(( comment, index ) => (
-                  <>
-                     <SingleComment comment={comment} postId={props.postId} refreshFunction={props.refreshFunction} />
-                  </>
+            (props.CommentLists && props.CommentLists.map(( comment, index ) => (
+                  (!comment.responseTo &&
+                     <>
+                        <SingleComment comment={comment} postId={props.postId} refreshFunction={props.refreshFunction} />
+                        <ReplyComment CommentLists={props.CommentLists} postId={props.portId} parentCommentId={comment._id} refreshFunction={props.refreshFunction}/>
+                     </>
+                  )
                ))
             )
          }
