@@ -32,7 +32,7 @@ function DetailVideoPage(props) {
       axios.post('/api/comment/getComments', videoVariable)
       .then((response) => {
          if(response.data.success) {
-            // console.log('detail video', response.data)
+            // console.log('get comments', response.data)
             setCommentLists(response.data.comments)
          } else {
             alert('Failed to get video info')

@@ -10,7 +10,6 @@ function SideVideo(props) {
       axios.get('/api/video/getVideos')
       .then((response) => {
          if(response.data.success){
-            console.log('side videos', response.data)
             setSideVideos(response.data.videos)
          } else {
 

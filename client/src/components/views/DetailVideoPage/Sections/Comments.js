@@ -29,7 +29,6 @@ function Comments(props) {
          if(response.data.success) {
             setComment("")
             props.refreshFunction(response.data.result)
-            console.log(response.data.result)
          } else {
             alert('Failed to save comment')
          }
@@ -41,13 +40,12 @@ function Comments(props) {
          <br/>
          <p> replies </p>
          <hr/>
-         {/* { comment list} */}
          {
             (props.CommentLists && props.CommentLists.map(( comment, index ) => (
                   (!comment.responseTo &&
                      <>
                         <SingleComment comment={comment} postId={props.postId} refreshFunction={props.refreshFunction} />
-                        <ReplyComment CommentLists={props.CommentLists} postId={props.portId} parentCommentId={comment._id} refreshFunction={props.refreshFunction}/>
+                        <ReplyComment CommentLists={props.CommentLists} postId={props.postId} parentCommentId={comment._id} refreshFunction={props.refreshFunction}/>
                      </>
                   )
                ))
