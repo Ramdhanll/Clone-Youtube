@@ -4,6 +4,7 @@ import axios from 'axios'
 import SideVideo from './Sections/SideVideo'
 import Subscriber from './Sections/Subscriber'
 import Comments from './Sections/Comments'
+import LikeDislikes from './Sections/LikeDislikes'
 import { useSelector } from 'react-redux'
 
 function DetailVideoPage(props) {
@@ -38,7 +39,7 @@ function DetailVideoPage(props) {
             alert('Failed to get video info')
          }
       })
-   }, [])
+   }, [videoId])
 
    const updateComment = (newComment) => {
       setCommentLists(CommentLists.concat(newComment))
@@ -51,9 +52,12 @@ function DetailVideoPage(props) {
                <video style={{ width: '100%' }} src={`http://localhost:5000/${Video.filePath}`} controls></video>
                {
                   Video.writer && user.userData? (
-                     <List.Item
-                  actions={[ <Subscriber userTo={Video.writer._id} userFrom={user.userData._id}/>]}
-               >
+                  <List.Item
+                     actions={[ 
+                                 <LikeDislikes video videoId={videoId} userId={user.userData._id} />,
+                                 <Subscriber userTo={Video.writer._id} userFrom={user.userData._id}/>
+                              ]}
+                  >
                   <List.Item.Meta
                      avatar={<Avatar src={Video.writer && Video.writer.image} />}
                      description={Video.description}
