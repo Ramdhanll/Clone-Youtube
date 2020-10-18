@@ -86,7 +86,15 @@ const getVideo = (req, res) => {
   .populate('writer', '_id name image')
   .exec((err, video) => {
     if(err) return res.status(400).send(err)
-    res.status(200).json({success : true, video})
+
+    // increment views +1 
+    Video.findByIdAndUpdate({"_id" : req.body.videoId}, {
+      $inc: { views: 1} // increment +1
+    },{new: true},(err, video) => {
+      if(err) return res.status(400).send(err)
+      res.status(200).json({success : true, video})
+    })
+
   })
 }
 
